@@ -1,0 +1,43 @@
+---
+- name: SSH connection test
+  hosts: lokal:cloud
+  become: true
+  tasks:
+    - name: Check SSH status
+      service:
+        name: sshd
+        state: started
+      register: ssh_status
+
+    - name: Print SSH status message
+      debug:
+        msg: "SSH service is {{ ssh_status.state }}"
+
+
+- name: Install Terraform
+  hosts: lokal:cloud
+  become: true
+  vars:
+    terraform_version: "1.1.5"
+  tasks:
+    - name: Download Terraform
+      get_url:
+        url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip"
+        dest: "/tmp/terraform_{{ terraform_version }}_linux_amd64.zip"
+    # - name: Install unzip
+    #   apt:
+    #     name: unzip
+    #     state: present
+    # # - name: Unzip Terraform
+    # #   command: "unzip /tmp/terraform_{{ terraform_version }}_linux_amd64.zip -d /usr/local/bin/"
+    - name: Extract File Terraform
+      unarchive:
+        src: /tmp/terraform_{{ terraform_version }}_linux_amd64.zip
+        dest: /usr/local/bin/
+        remote_src: yes
+
+    - name: Set Terraform Permissions
+      file:
+        path: /usr/local/bin/terraform
+        mode: "u+x,g+x"
+

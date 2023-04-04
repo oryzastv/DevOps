@@ -1,0 +1,14 @@
+---
+- name: Uninstall Terraform
+  hosts: lokal:cloud
+  become: true
+  vars:
+    terraform_version: "1.1.5"
+  tasks:
+    - name: Remove Terraform Binary
+      file:
+        path: /usr/local/bin/terraform
+        state: absent
+    - name: Remove Terraform Data Directory
+      shell: rm -rf /root/.terraform.d
+

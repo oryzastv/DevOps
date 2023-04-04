@@ -1,0 +1,5 @@
+[lokal]
+lokal ansible_host=192.168.0.198 ansible_user=root
+
+[cloud]
+cloud ansible_host=47.254.247.106 ansible_user=root

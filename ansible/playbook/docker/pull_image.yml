@@ -1,0 +1,68 @@
+# - name: Pull Docker image from private registry
+#   hosts: lokal:cloud
+#   become: true
+#   vars:
+#     docker_registry: https://hub.docker.com/repository/docker/oryzasativa31/django-website/
+#     docker_repo: django-website
+#     docker_tag: latest
+#     docker_username: oryzasativa31
+#     docker_password: !vault |
+#       $ANSIBLE_VAULT;1.1;AES256
+#       32393737323237383439636136346434623663353334643634646430656364393862326333306436
+#       6238656633316564353865336430613264383564636234320a316462313830616430356434366366
+#       64326134666164356665366137373436306631343562386539663237353533346262396563383537
+#       3066333438663866370a613330373231353262666535323934633635376430383730356538363631
+#       6165
+
+#   tasks:
+#     - name: Login to Docker registry
+#       docker_login:
+#         registry_url: "{{ docker_registry }}"
+#         username: "{{ docker_username }}"
+#         password: "{{ docker_password }}"
+#     - name: Pull Docker image
+#       docker_image:
+#         name: "{{ docker_registry }}/{{ docker_repo }}:{{ docker_tag }}"
+
+# - name: Pull Image from Docker Hub Private
+#   hosts: lokal:cloud
+#   become: true
+
+#   vars_files:
+#     - vars_pass.yml
+
+#   tasks:
+#     - name: Login to Docker Hub Private
+#       docker_login:
+#         username: oryzasativa31
+#         password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
+#         registry_url: https://hub.docker.com/repository/docker/oryzasativa31/django-website
+
+#     - name: Pull Docker Image
+#       docker_image:
+#         name: django-website
+#         tag: latest
+
+- name: Pull Docker Image from Private Repository
+  hosts: lokal:cloud
+  become: true
+
+  vars:
+    docker_username: oryzasativa31
+    docker_password: C0b412345@
+    docker_image_name: django-website
+    docker_image_tag: latest
+
+  tasks:
+    - name: Login to Docker Hub
+      docker_login:
+        username: "{{ docker_username }}"
+        password: "{{ docker_password }}"
+      register: docker_login_result
+
+    - name: Pull Docker Image from Private Repository
+      docker_image:
+        name: "{{ docker_image_name }}:{{ docker_image_tag }}"
+        source: pull
+        force_tag: yes
+      when: docker_login_result.logged_in == true

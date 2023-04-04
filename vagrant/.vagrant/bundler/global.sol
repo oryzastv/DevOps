@@ -1,0 +1,1 @@
+{"dependencies":[["ffi",["~> 1.0"]],["virtualbox",["= 0.8.6"]]],"checksum":"da0d1c4dfd264845dc17de49b2f5682ff5c344eb6985a7f430dcad4879864675","vagrant_version":"2.3.4"}

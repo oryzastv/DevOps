@@ -1,0 +1,28 @@
+- name: SSH connection test lokal
+  hosts: lokal:cloud
+  become: no
+  tasks:
+    - name: Check SSH status
+      service:
+        name: sshd
+        state: started
+      register: ssh_status
+
+    - name: Print SSH status message
+      debug:
+        msg: "SSH service is {{ ssh_status.state }}"
+
+
+- name: SSH connection test cloud
+  hosts: cloud
+  become: yes
+  tasks:
+    - name: Check SSH status
+      service:
+        name: sshd
+        state: started
+      register: ssh_status
+
+    - name: Print SSH status message
+      debug:
+        msg: "SSH service is {{ ssh_status.state }}"

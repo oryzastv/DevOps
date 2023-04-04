@@ -1,0 +1,38 @@
+- name: Uninstall Docker
+  hosts: lokal:cloud
+  become: true
+  vars:
+    docker_packages:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+  tasks:
+    - name: Stop and Disable Docker service
+      systemd:
+        name: docker
+        state: stopped
+        enabled: no
+    - name: Uninstall Docker packages
+      apt:
+        name: "{{ docker_packages }}"
+        state: absent
+    - name: Remove Docker Data Directory
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - /var/lib/docker
+        - /var/run/docker
+      with_items:
+        - /var/lib/docker
+        - /var/run/docker
+    - name: Remove Docker dependencies
+      apt:
+        autoremove: true
+        state: absent
+        purge: true
+        name:
+          - aufs-tools
+          - cgroupfs-mount
+          - pigz
+          - libltdl7
